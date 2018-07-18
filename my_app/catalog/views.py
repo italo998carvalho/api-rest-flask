@@ -16,20 +16,21 @@ class ProductView(MethodView):
     def get(self, id=None, page=1):
         if not id:
             products = Product.query.paginate(page, 10).items
-            res = {}
+            res = []
             for product in products:
-                res[product.id] = {
-                    'name': product.name,
-                    'price': str(product.price),
-                }
+                res.append({
+                    'id':product.id,
+                    'name':product.name,
+                    'price':str(product.price),
+                })
         else:
             product = Product.query.filter_by(id=id).first()
             if not product:
                 abort(404)
-            res = {
-                'name': product.name, 
-                'price': str(product.price)
-            }
+            res = [{
+                'name':product.name, 
+                'price':str(product.price)
+            }]
         return jsonify(res)
 
     def post(self):
@@ -38,10 +39,11 @@ class ProductView(MethodView):
         product = Product(name, price)
         db.session.add(product)
         db.session.commit()
-        return jsonify({product.id: {
-            'name': product.name, 
-            'price': str(product.price),
-        }})
+        return jsonify({
+            'id':product.id,
+            'name':product.name,
+            'price':str(product.price),
+        })
 
     def put(self, id):
         if not id:
@@ -55,10 +57,11 @@ class ProductView(MethodView):
         product.price = price
 
         db.session.commit()
-        return jsonify({product.id: {
-            'name': product.name, 
-            'price': str(product.price),
-        }})
+        return jsonify({
+            'id':product.id,
+            'name':product.name,
+            'price':str(product.price),
+        })
 
     def delete(self, id):
         if not id:
@@ -67,10 +70,11 @@ class ProductView(MethodView):
         product = Product.query.filter_by(id=id).first()
         db.session.delete(product)
         db.session.commit()
-        return jsonify({product.id: {
-            'name': product.name, 
-            'price': str(product.price),
-        }})
+        return jsonify({
+            'id': product.id,
+            'name':product.name,
+            'price':str(product.price),
+        })
 
 product_view = ProductView.as_view('product_view')
 app.add_url_rule(
