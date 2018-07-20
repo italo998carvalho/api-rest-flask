@@ -46,10 +46,9 @@ class ProductView(MethodView):
         })
 
     def put(self, id):
-        if not id:
-            abort(404)
-
         product = Product.query.filter_by(id=id).first()
+        if not product:
+            abort(404)
         name = request.json['name']
         price = request.json['price']
 
@@ -64,10 +63,9 @@ class ProductView(MethodView):
         })
 
     def delete(self, id):
-        if not id:
-            abort(404)
-        
         product = Product.query.filter_by(id=id).first()
+        if not product:
+            abort(404)
         db.session.delete(product)
         db.session.commit()
         return jsonify({
